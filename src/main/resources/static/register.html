@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <script type="text/javascript" src="style/js/jquery.min.js"></script>
+</head>
+<body>
+<div><a href="login.html" style="text-decoration: none" >账号登陆</a><span>|</span><a href="" style="text-decoration: none">账号注册</a></div>
+<form action="/registerCheck">
+    <div><input type="text" id="username" name="username" placeholder="用户名"></div>
+    <div><input type="password" id="password" name="password" placeholder="密码"></div>
+        <div><input type="email" id="email" name="email" placeholder="邮箱"></div>
+    <div class="normalInput fieldInput">
+        <input type="text"  name="Verificationcode" id="Verificationcode" maxlength="16" autocomplete="off" placeholder="验证码"/>
+        <span id="verifyCode"   onclick="sendsms(this);">获取验证码</span>
+    </div>
+    <div><input type="submit" id="register" value="注册"></div>
+</form>
+
+<script>
+    //邮箱验证码
+    var c = "";
+
+    $("#register").click(function(){
+      var username = $("#username").val();
+      var password = $("#password").val();
+      var email = $("#email").val();
+      var Verificationcode = $("#Verificationcode").val();
+      var r = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+      var t = email.match(r);
+      if(username == ""){
+          alert("用户名不能为空");
+          return false;
+      }else if(password == "") {
+          alert("密码不能为空");
+          return false;
+      }else if(email == ""){
+          alert("邮箱不能为空");
+          return false;
+      }else if(t == null) {
+          alert("邮箱格式错误");
+          return false;
+      }else if(Verificationcode == ""){
+          alert("验证码不能为空");
+          return false;
+      }else if(Verificationcode!=c){
+          alert("验证码错误");
+          return false;
+      }
+      else {
+          return true;
+      }
+    })
+
+    function sendsms(e) {
+
+        var email = $("#email").val();
+        var Verificationcode = $("#Verificationcode").val();
+        var r = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+        var t = email.match(r);
+        if(email == ""){
+            alert("邮箱不能为空");
+            return false;
+        }else if(r == null) {
+            alert("邮箱格式错误");
+            return false;
+        }else {
+            //发送ajax请求，后台发送邮件
+            c = "";
+            $.ajax({
+                type: 'GET',
+                url: '/getYZM',
+                data: 'email='+email,
+                dataType: 'json',
+                success: function (msg) {
+                    alert(msg)
+                    c = c+msg;
+                },
+                error:function (XMLHttpRequest) {
+                    alert(XMLHttpRequest.status)
+                },
+            });
+            /*发送验证码功能*/
+            countdown(e);     //若发送验证码成功，则调用倒计时函数
+        }
+
+    };
+    //倒计时函数
+
+    var time = 5;
+    function countdown(e) {
+        if (time == 0) {
+            e.setAttribute("onclick", "sendsms(this)");
+            $("#verifyCode").html("获取验证码");
+            //颜色恢复
+            var mychar = document.getElementById("verifyCode");
+            mychar.style.backgroundColor = "rgb(50,165,231)";
+            time = 5;
+        } else {
+            //设置背景为灰色
+            var mychar = document.getElementById("verifyCode");
+            mychar.style.backgroundColor = "rgb(169,169,169)";
+            e.removeAttribute("onclick");
+            $("#verifyCode").html("重新发送(" + time + ")");
+            time--;
+            setTimeout(function () {
+                countdown(e)
+            }, 1000)
+        }
+    }
+
+
+</script>
+
+</body>
+</html>

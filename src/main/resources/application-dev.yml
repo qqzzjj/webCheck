@@ -1,0 +1,51 @@
+server:
+  port: 9999
+
+spring:
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    driver-class-name: com.mysql.jdbc.Driver
+
+    #QQ邮箱
+  mail:
+    host: smtp.qq.com #发送邮件服务器
+    username: 1251692257@qq.com #发送邮件的邮箱地址
+    password:  dnnjgwprcvpxhcah #客户端授权码，不是邮箱密码，这个在qq邮箱设置里面自动生成的
+    properties.mail.smtp.port: 465 #端口号465或587
+    from: 1251692257@qq.com # 发送邮件的地址，和上面username一致
+    properties.mail.smtp.starttls.enable: true
+    properties.mail.smtp.starttls.required: true
+    properties.mail.smtp.ssl.enable: true
+    default-encoding: utf-8
+
+
+#showSql
+logging:
+  level:
+    com:
+      example:
+        mapper:debug
+
+mybatis-plus:
+  # 如果是放在src/main/java目录下 classpath:/com/yourpackage/*/mapper/*Mapper.xml
+  # 如果是放在resource目录 classpath:/mapper/*Mapper.xml
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.example.entity
+  global-config:
+    #逻辑删除配置（下面3个配置）
+    db-config:
+      table-underline: true
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+    #自定义填充策略接口实现
+  configuration:
+    #配置返回数据库(column下划线命名&&返回java实体是驼峰命名)，自动匹配无需as（没开启这个，SQL需要写as： select user_id as userId）
+    map-underscore-to-camel-case: true
+    cache-enabled: true
+    #配置JdbcTypeForNull, oracle数据库必须配置
+    jdbc-type-for-null: 'null'
+    #打印sql语句,调试用
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

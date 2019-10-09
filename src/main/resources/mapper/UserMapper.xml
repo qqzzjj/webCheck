@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.UserMapper">
+    <resultMap id="UserMap" type="com.example.entity.User">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="userName" jdbcType="VARCHAR" property="userName" />
+        <result column="passWord" jdbcType="VARCHAR" property="passWord" />
+        <result column="realName" jdbcType="VARCHAR" property="realName" />
+    </resultMap>
+
+    <select id="Sel" resultType="com.example.entity.User">
+        select * from user1 where id = #{id}
+    </select>
+
+    <select id="SelAll" resultMap="UserMap">
+        select * from user1
+    </select>
+
+    <insert id="Ins" parameterType="com.example.entity.User">
+        insert into user1 values (#{id},#{userName},#{passWord},#{realName})
+    </insert>
+
+    <delete id="Del" parameterType="int">
+        delete from user1 where id = #{id}
+    </delete>
+
+    <update id="Upd" parameterType="com.example.entity.User">
+            update user1 set userName = #{userName},passWord = #{passWord},realName= #{realName} where id = #{id}
+    </update>
+
+    <select id="checkLoad" parameterType="com.example.entity.U" resultType="com.example.entity.U">
+        select * from u where username = #{username} and password = #{password}
+    </select>
+
+    <select id="registerCheck" parameterType="com.example.entity.U" resultType="com.example.entity.U">
+        select * from u where username = #{username}
+    </select>
+
+    <insert id="registerIns" parameterType="com.example.entity.U">
+        insert into u values (#{username},#{password},#{email})
+    </insert>
+</mapper>

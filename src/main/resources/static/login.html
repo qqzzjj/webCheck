@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登陆</title>
+    <script type="text/javascript" src="style/js/jquery.min.js"></script>
+    <script type="text/javascript" src="style/js/jquery.cookie.js"></script>
+</head>
+<body>
+<div><a href="" style="text-decoration: none" >账号登陆</a><span>|</span><a href="register.html" style="text-decoration: none">账号注册</a></div>
+<form action="/loginCheck">
+    <div><input type="text" id="username" name="username" placeholder="用户名"/></div>
+    <div><input type="password" id="password" name="password"  placeholder="密码"/></div>
+    <div><input  name="verify" id="verify" maxlength="50" placeholder="验证码" autocomplete="off" />
+        <span id="code"  class="imgcode" >点击获取验证码</span></div>
+    <div><input type="checkbox" name="remember" id="remember" checked/>记住登陆信息</div>
+    <div><input type="submit" value="登陆" id="login" name="login"/></div>
+</form>
+<script type="text/javascript">
+    //一加载就执行填充信息  用于记住登录信息
+    $(document).ready(function() {
+        if ($.cookie("username") != '') {
+            $("#username").val($.cookie("username"));
+        }
+        if ($.cookie("password") != '') {
+            $("#password").val($.cookie("password"));
+        }
+
+    })
+
+    //用于验证码
+    var code;//声明一个变量用于存储生成的验证码
+    document.getElementById("code").onclick=changeImg;
+    function changeImg(){
+        //alert("换图片");
+        var arrays=new Array(
+            '1','2','3','4','5','6','7','8','9','0',
+            'a','b','c','d','e','f','g','h','i','j',
+            'k','l','m','n','o','p','q','r','s','t',
+            'u','v','w','x','y','z',
+            'A','B','C','D','E','F','G','H','I','J',
+            'K','L','M','N','O','P','Q','R','S','T',
+            'U','V','W','X','Y','Z'
+        );
+        code='';//重新初始化验证码
+        //alert(arrays.length);
+        //随机从数组中获取四个元素组成验证码
+        for(var i=0;i<4;i++){
+            //随机获取一个数组的下标
+            var r=parseInt(Math.random()*arrays.length);
+            code+=arrays[r];
+        }
+        //alert(code);
+        document.getElementById('code').innerHTML=code;//将验证码写入指定区域
+    }
+
+
+    $("#login").click(function(){
+        var username = $("#username").val();
+        var password = $("#password").val();
+        var verify = $("#verify").val();
+        var code = $('#code').html();
+        if(username == ""){
+            alert("用户名不能为空");
+            return false;
+        }else if(password == ""){
+            alert("密码不能为空");
+            return false;
+        }else if(verify == ""){
+            alert("验证码不能为空");
+            return false;
+        }else if(code != verify){
+            alert("验证码错误");
+            return false;
+        } else {
+            return true ;
+        }
+
+        //判断是否勾选记住登录信息
+        if ($("#remember").prop("checked") == true) {
+            //记录信息
+            var username = $("#username").val();
+            var password = $("#password").val();
+            //alert(passWord);
+            $.cookie("username", username);
+            $.cookie("password", password,{ expires: 7 }); // 存储一个带7天期限的 cookie 如果{ expires: 7 }
+        }else{
+            $.cookie("username", "");
+            $.cookie("password", "");
+        }
+
+    });
+
+
+</script>
+</body>
+</html>
